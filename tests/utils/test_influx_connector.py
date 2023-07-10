@@ -1,4 +1,4 @@
-from server.utils.influx_connector import InfluxConnector
+from app.utils.influx_connector import InfluxConnector
 import unittest
 import logging
 from influxdb import InfluxDBClient

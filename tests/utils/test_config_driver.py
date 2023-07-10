@@ -1,4 +1,4 @@
-from server.utils.config_driver import ConfigDriver
+from app.utils.config_driver import ConfigDriver
 import pathlib
 import unittest
 
