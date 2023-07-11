@@ -1,19 +1,20 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from app.models.ssl_configuration import SSLConfiguration
 
 ssl_bp = Blueprint('ssl', __name__)
 
 @ssl_bp.route('/ssl', methods=['GET'])
 def get_ssl_configurations():
-    # Logic to fetch SSL configurations from the database
-    ssl_configs = [
-        {
-            'id': 1,
-            'host': 'example.com',
-            'address': '192.168.0.1',
-            'description': 'Sample SSL configuration',
-            'port': 443
-        },
-        # Add more SSL configurations as needed
-    ]
+    ssl_configs = SSLConfiguration.get_all()
 
     return jsonify(ssl_configs)
+
+@ssl_bp.route('/ssl', methods=['POST'])
+def set_ssl_configuration():
+
+    data = request.get_json()
+
+    response = SSLConfiguration.save(data['host'], data['address'], data['port'], data['description'])
+
+    response = {'message': 'Data processed successfully'}
+    return jsonify(response), 200

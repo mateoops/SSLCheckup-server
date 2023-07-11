@@ -1,14 +1,19 @@
-from run import db
+from db import db_influx
+import datetime
 
-class SSLConfiguration(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    host = db.Column(db.String(255), nullable=False)
-    address = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(255), nullable=True)
-    port = db.Column(db.Integer, nullable=False)
+class SSLConfiguration():
+    @staticmethod
+    def save(host, address, port, description):
 
-    def __init__(self, host, address, port, description=None):
-        self.host = host
-        self.address = address
-        self.port = port
-        self.description = description
+        #write(self, bucket, measurement, tag: dict, field: dict)
+        db_influx.write('ssl_configuration', 'ssl_configuration_meas', 'tag_key', 'tag_value', 'host', host)
+        db_influx.write('ssl_configuration', 'ssl_configuration_meas', 'tag_key', 'tag_value', 'address', address)
+        db_influx.write('ssl_configuration', 'ssl_configuration_meas', 'tag_key', 'tag_value', 'port', port)
+        db_influx.write('ssl_configuration', 'ssl_configuration_meas', 'tag_key', 'tag_value', 'description', description)
+
+    @staticmethod
+    def get_all():
+        query = 'from(bucket:"{}") |> range(start: -1h)'.format('ssl_configuration')
+        result = db_influx.query(query)
+
+        return result
